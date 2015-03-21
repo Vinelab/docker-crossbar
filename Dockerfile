@@ -16,3 +16,5 @@ RUN pip install crossbar[all]
 RUN crossbar version
 
 WORKDIR /
+
+CMD crossbar start --cbdir /.crossbar
