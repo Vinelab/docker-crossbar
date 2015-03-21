@@ -1,23 +1,18 @@
-FROM fedora:21
+FROM centos:7
 
 MAINTAINER Abed Halawi <abed.halawi@vinelab.com>
 
-RUN yum install libffi-devel python-pip python-devel gcc openssl-devel -y
-# RUN yum update -y
-RUN yum clean all
+RUN rpm -iUvh http://dl.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-5.noarch.rpm
 
-RUN pip install --upgrade twisted
-RUN pip install ez_setup six pyopenssl pycrypto wsaccel ujson
-RUN pip install --upgrade distribute
+RUN yum install -y libffi-devel python-pip gcc openssl-devel python-devel
+RUN pip install virtualenv
+RUN virtualenv python-venv
 
-RUN pip install crossbar[tls,msgpack,manhole,system]
+WORKDIR /python-venv
+RUN . bin/activate
+
+RUN pip install crossbar[all]
 
 RUN crossbar version
 
-RUN crossbar init
-
-ADD config.json /.crossbar/
-
-EXPOSE 8000
-
-CMD crossbar start --cbdir /.crossbar
+WORKDIR /
